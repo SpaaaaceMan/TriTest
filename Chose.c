@@ -24,3 +24,17 @@ int main ()
 	
 	return 0;
 }
+
+//Création Tableau de taille X
+int Taille = 100;
+int Tab[100];
+for (i = 0; i < 20; i++)
+{
+	RemplirTableauAleatoire(Tab, Taille);
+	//Tri
+	//voir au-dessus
+}
+
+//Création Tableau de taille Y
+...
+
