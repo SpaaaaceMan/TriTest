@@ -24,14 +24,17 @@ void afficherTableau (int tableau[], int taille)
     }
 }
 
+
+
 int main ()
 {
-	int tab[100];
     clock_t debut, fin;
     debut = clock();
-	remplirTableauAleatoire(tab, 100);
+    int taille = 1000;
+    int tab[taille];
+    remplirTableauAleatoire(tab, taille);
+    //afficherTableau(tab, taille);
     fin = clock();
-    printf("%d", (fin - debut) * 1.0 / CLOCKS_PER_SEC);
-    afficherTableau(tab, 100);
+    printf("%f", (((double)(fin - debut)) / CLOCKS_PER_SEC) * 1000.0);
     return 0;
 }
