@@ -218,27 +218,53 @@ void displayTimeElapsedInMilliseconds()
 	 printf("Execution time : %fms\n", getTimeElapsedInMilliseconds());
 }
 
-void DoSort (FILE * ResultTest, int size, int tab[])
-{	
+double CalcAverage (double Time[])
+{
+	double Average = 0;
 	int i;
-    
-    clock_t begin, end;
-    
-    FILE * Result = OpenCSV();
-    double Time[20];
-    fprintf(Result, "Tri Par Insertion Séquentielle;%d;", size);
-    
-    for (i = 0; i < 20; ++i)
-    {
-		fillWithRandomNumbers(tab, size);
-		begin = clock();
-		sequentialInsertionSort(tab, size);
-		end = clock();
-		Time[i] = ((double) (end - begin) / CLOCKS_PER_SEC) * 1000.0;
-		fprintf(Result, "%f;", Time[i]);
-	}	
 	
-	//fprintf(Result, "%f\n", CalcAverage(Time));
+	for (i = 0; i < 20; ++i)
+		Average += Time[i];
+	
+	Average /= 20;
+	return Average;
+}
+
+void ReInitTime(double Time[])
+{
+	int i;
+	for (i = 0; i < 20; ++i)
+		Time[i] = 0;		
+}
+
+void DoSort (FILE * ResultTest)
+{	
+	int j;
+	int i;
+	double TotalTime = 0;
+	int size;
+	double Time[20];
+	for (j = 0; j < 15; ++j)
+	{
+		size = sizesUseForTests[j];
+		int tab[size];
+		FILE * Result = OpenCSV();
+		fprintf(Result, "Tri Par Insertion Séquentielle;%d;", size);
+		for (i = 0; i < 20; ++i)
+		{
+			fillWithRandomNumbers(tab, size);
+			begin = clock();
+			sequentialInsertionSort(tab, size);
+			end = clock();
+			Time[i] = getTimeElapsedInMilliseconds();
+			fprintf(Result, "%f;", Time[i]);
+			TotalTime += Time[i];
+			if (TotalTime > 10000)
+				break;
+		}
+		fprintf(Result, "%f\n", CalcAverage(Time));
+		ReInitTime(Time);
+	}
 }
 
 /**
@@ -263,7 +289,11 @@ void initSizesUseForTests ()
 
 int main ()
 {
-	initSizesUseForTests();
+	CreateCSV();
+	
+	DoSort(OpenCSV());
+	
+	/*initSizesUseForTests();
     int i;
 	for (i = 0; i < numberOfSizesToUse; i++)
 	{
@@ -280,6 +310,6 @@ int main ()
 		
 		//show time
 		displayTimeElapsedInMilliseconds();
-	}
+	}*/
     return 0;
 }
