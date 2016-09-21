@@ -135,6 +135,12 @@ void dichotomousInsertionSort (int tab[], int size)
 	}
 }
 
+/**
+ * \fn CreateCSV ()
+ * \author Kurt SAVIO
+ * \brief Create a csv file named "ResultatTestTri.csv" and include 
+ * titles at the begining of the file for better undrestanding
+ */
 void CreateCSV ()
 {
 	FILE * ResultTest = fopen("ResultatTestTri.csv", "w");
@@ -179,6 +185,13 @@ void CreateCSV ()
 	fclose(ResultTest);
 }
 
+/**
+ * \fn OpenCSV()
+ * \author Kurt SAVIO
+ * \brief Open the csv file called "ResultatTestTri.csv" in append mode 
+ * in order to add data after titles
+ * \return the opened file
+ */
 FILE* OpenCSV ()
 {
 	FILE * ResultTest = fopen("ResultatTestTri.csv", "a");
@@ -191,6 +204,12 @@ FILE* OpenCSV ()
 	return ResultTest;
 }
 
+/**
+ * \fn CloseCSV()
+ * \author Kurt SAVIO
+ * \brief close the csv file given in param (that should be "ResultatTestTri.csv")
+ * \param ResultTest : The file to close
+ */
 void CloseCSV (FILE * ResultTest)
 {
 	fclose(ResultTest);
@@ -218,6 +237,13 @@ void displayTimeElapsedInMilliseconds()
 	 printf("Execution time : %fms\n", getTimeElapsedInMilliseconds());
 }
 
+/**
+ * \fn CalcAverage (double Time[])
+ * \author Kurt SAVIO
+ * \brief Calculate the average time of a pool of sort
+ * \param Time[] : An array containing the 20 time (max) of a sort
+ * \return The average of the 20 time.
+ */
 double CalcAverage (double Time[])
 {
 	double Average = 0;
@@ -230,6 +256,12 @@ double CalcAverage (double Time[])
 	return Average;
 }
 
+/**
+ * \fn ResetTime (double Time[])
+ * \author Kurt SAVIO
+ * \brief Reset the array of the 20 time
+ * \param Time[] : An array containing the 20 time (max) of a sort
+ */
 void ResetTime(double Time[])
 {
 	int i;
@@ -237,6 +269,13 @@ void ResetTime(double Time[])
 		Time[i] = 0;		
 }
 
+/**
+ * \fn DoSort ()
+ * \author Kurt SAVIO
+ * \brief Create, fill and sort a table for each sort and size, 20 time 
+ * each. Also calculate the average time, look out for the total time.
+ * Then it writes all the result in the csv file. 
+ */
 void DoSort ()
 {	
 	int j;
@@ -262,8 +301,9 @@ void DoSort ()
 			TotalTime += Time[i];
 			if (TotalTime > 300000) // 5min = 300000ms
 				break;
-		}
+		}//NULL quand temps > 5min
 		fprintf(Result, "%f\n", CalcAverage(Time));
+		TotalTime = 0;
 		ResetTime(Time);
 	}
 	
@@ -286,7 +326,7 @@ void DoSort ()
 				break;
 		}
 		fprintf(Result, "%f\n", CalcAverage(Time));
-		ReInitTime(Time);
+		ResetTime(Time);
 	}
 	
 	CloseCSV(Result);
