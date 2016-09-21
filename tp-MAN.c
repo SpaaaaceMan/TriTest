@@ -215,6 +215,29 @@ void displayTimeElapsedInMilliseconds()
 	 printf("Execution time : %fms", getTimeElapsedInMilliseconds());
 }
 
+void DoSort (FILE * ResultTest, int size, int tab[])
+{	
+	int i;
+    
+    clock_t begin, end;
+    
+    FILE * Result = OpenCSV();
+    double Time[20];
+    fprintf(Result, "Tri Par Insertion Séquentielle;%d;", size);
+    
+    for (i = 0; i < 20; ++i)
+    {
+		fillWithRandomNumbers(tab, size);
+		begin = clock();
+		sequentialInsertionSort(tab, size);
+		end = clock();
+		Time[i] = ((double) (end - begin) / CLOCKS_PER_SEC) * 1000.0;
+		fprintf(Result, "%f;", Time[i]);
+	}	
+	
+	fprintf(Result, "%f\n", CalcAverage(Time));
+}
+
 int main ()
 {
     begin = clock();
