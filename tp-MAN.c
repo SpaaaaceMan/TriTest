@@ -237,18 +237,19 @@ void ReInitTime(double Time[])
 		Time[i] = 0;		
 }
 
-void DoSort (FILE * ResultTest)
+void DoSort ()
 {	
 	int j;
 	int i;
 	double TotalTime = 0;
 	int size;
 	double Time[20];
+	FILE * Result = OpenCSV();
 	for (j = 0; j < 15; ++j)
 	{
 		size = sizesUseForTests[j];
+		printf ("%d\n%d\n", size, sizesUseForTests[j]);
 		int tab[size];
-		FILE * Result = OpenCSV();
 		fprintf(Result, "Tri Par Insertion Séquentielle;%d;", size);
 		for (i = 0; i < 20; ++i)
 		{
@@ -291,10 +292,11 @@ int main ()
 {
 	CreateCSV();
 	
-	DoSort(OpenCSV());
+	initSizesUseForTests();
 	
-	/*initSizesUseForTests();
-    int i;
+	DoSort();
+	
+    /*int i;
 	for (i = 0; i < numberOfSizesToUse; i++)
 	{
 		int currentSizeUse = sizesUseForTests[i];
