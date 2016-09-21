@@ -230,7 +230,7 @@ double CalcAverage (double Time[])
 	return Average;
 }
 
-void ReInitTime(double Time[])
+void ResetTime(double Time[])
 {
 	int i;
 	for (i = 0; i < 20; ++i)
@@ -260,12 +260,36 @@ void DoSort ()
 			Time[i] = getTimeElapsedInMilliseconds();
 			fprintf(Result, "%f;", Time[i]);
 			TotalTime += Time[i];
+			if (TotalTime > 300000) // 5min = 300000ms
+				break;
+		}
+		fprintf(Result, "%f\n", CalcAverage(Time));
+		ResetTime(Time);
+	}
+	
+	for (j = 0; j < 15; ++j)
+	{
+		size = sizesUseForTests[j];
+		printf ("%d\n%d\n", size, sizesUseForTests[j]);
+		int tab[size];
+		fprintf(Result, "Tri Par Insertion Dichotomique;%d;", size);
+		for (i = 0; i < 20; ++i)
+		{
+			fillWithRandomNumbers(tab, size);
+			begin = clock();
+			dichotomousInsertionSort(tab, size);
+			end = clock();
+			Time[i] = getTimeElapsedInMilliseconds();
+			fprintf(Result, "%f;", Time[i]);
+			TotalTime += Time[i];
 			if (TotalTime > 300000)
 				break;
 		}
 		fprintf(Result, "%f\n", CalcAverage(Time));
 		ReInitTime(Time);
 	}
+	
+	CloseCSV(Result);
 }
 
 /**
