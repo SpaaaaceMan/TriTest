@@ -260,7 +260,7 @@ void DoSort ()
 			Time[i] = getTimeElapsedInMilliseconds();
 			fprintf(Result, "%f;", Time[i]);
 			TotalTime += Time[i];
-			if (TotalTime > 10000)
+			if (TotalTime > 300000)
 				break;
 		}
 		fprintf(Result, "%f\n", CalcAverage(Time));
