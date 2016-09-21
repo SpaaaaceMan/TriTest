@@ -51,6 +51,7 @@ void display (int tab[], int size)
     {
         printf("%d %d\n", i, tab[i]);
     }
+    printf("==========\n");
 }
 
 /**
@@ -135,12 +136,24 @@ void dichotomousInsertionSort (int tab[], int size)
 	}
 }
 
-/**
- * \fn CreateCSV ()
- * \author Kurt SAVIO
- * \brief Create a csv file named "ResultatTestTri.csv" and include 
- * titles at the begining of the file for better undrestanding
- */
+void permutationSort (int tab[], int size)
+{
+	int i, j, tmp;
+	for (i = 0; i < size; i++)
+	{
+		for (j = i + 1; j < size; j++)
+		{
+			if (tab[i] > tab[j])
+			{
+				tmp = tab[j];
+				tab[j] = tab[i];
+				tab[i] = tmp;
+				
+			}
+		}
+	}
+}
+
 void CreateCSV ()
 {
 	FILE * ResultTest = fopen("ResultatTestTri.csv", "w");
@@ -185,13 +198,6 @@ void CreateCSV ()
 	fclose(ResultTest);
 }
 
-/**
- * \fn OpenCSV()
- * \author Kurt SAVIO
- * \brief Open the csv file called "ResultatTestTri.csv" in append mode 
- * in order to add data after titles
- * \return the opened file
- */
 FILE* OpenCSV ()
 {
 	FILE * ResultTest = fopen("ResultatTestTri.csv", "a");
@@ -204,12 +210,6 @@ FILE* OpenCSV ()
 	return ResultTest;
 }
 
-/**
- * \fn CloseCSV()
- * \author Kurt SAVIO
- * \brief close the csv file given in param (that should be "ResultatTestTri.csv")
- * \param ResultTest : The file to close
- */
 void CloseCSV (FILE * ResultTest)
 {
 	fclose(ResultTest);
@@ -237,13 +237,6 @@ void displayTimeElapsedInMilliseconds()
 	 printf("Execution time : %fms\n", getTimeElapsedInMilliseconds());
 }
 
-/**
- * \fn CalcAverage (double Time[])
- * \author Kurt SAVIO
- * \brief Calculate the average time of a pool of sort
- * \param Time[] : An array containing the 20 time (max) of a sort
- * \return The average of the 20 time.
- */
 double CalcAverage (double Time[])
 {
 	double Average = 0;
@@ -256,26 +249,13 @@ double CalcAverage (double Time[])
 	return Average;
 }
 
-/**
- * \fn ResetTime (double Time[])
- * \author Kurt SAVIO
- * \brief Reset the array of the 20 time
- * \param Time[] : An array containing the 20 time (max) of a sort
- */
-void ResetTime(double Time[])
+void ReInitTime(double Time[])
 {
 	int i;
 	for (i = 0; i < 20; ++i)
 		Time[i] = 0;		
 }
 
-/**
- * \fn DoSort ()
- * \author Kurt SAVIO
- * \brief Create, fill and sort a table for each sort and size, 20 time 
- * each. Also calculate the average time, look out for the total time.
- * Then it writes all the result in the csv file. 
- */
 void DoSort ()
 {	
 	int j;
@@ -287,7 +267,6 @@ void DoSort ()
 	for (j = 0; j < 15; ++j)
 	{
 		size = sizesUseForTests[j];
-		printf ("%d\n%d\n", size, sizesUseForTests[j]);
 		int tab[size];
 		fprintf(Result, "Tri Par Insertion Séquentielle;%d;", size);
 		for (i = 0; i < 20; ++i)
@@ -299,37 +278,12 @@ void DoSort ()
 			Time[i] = getTimeElapsedInMilliseconds();
 			fprintf(Result, "%f;", Time[i]);
 			TotalTime += Time[i];
-			if (TotalTime > 300000) // 5min = 300000ms
-				break;
-		}//NULL quand temps > 5min
-		fprintf(Result, "%f\n", CalcAverage(Time));
-		TotalTime = 0;
-		ResetTime(Time);
-	}
-	
-	for (j = 0; j < 15; ++j)
-	{
-		size = sizesUseForTests[j];
-		printf ("%d\n%d\n", size, sizesUseForTests[j]);
-		int tab[size];
-		fprintf(Result, "Tri Par Insertion Dichotomique;%d;", size);
-		for (i = 0; i < 20; ++i)
-		{
-			fillWithRandomNumbers(tab, size);
-			begin = clock();
-			dichotomousInsertionSort(tab, size);
-			end = clock();
-			Time[i] = getTimeElapsedInMilliseconds();
-			fprintf(Result, "%f;", Time[i]);
-			TotalTime += Time[i];
 			if (TotalTime > 300000)
 				break;
 		}
 		fprintf(Result, "%f\n", CalcAverage(Time));
-		ResetTime(Time);
+		ReInitTime(Time);
 	}
-	
-	CloseCSV(Result);
 }
 
 /**
@@ -348,6 +302,8 @@ void initSizesUseForTests ()
 	int i;
 	for (i = 6; i < numberOfSizesToUse; i++)
 		sizesUseForTests[i] = sizesUseForTests[i-1] + 100000;
+		
+	//To verify the efficience of a sort faster (sizes are decreased)
 	for (i = 0; i < numberOfSizesToUse; i++)
 		sizesUseForTests[i] /= 100;
 }
@@ -358,24 +314,28 @@ int main ()
 	
 	initSizesUseForTests();
 	
-	DoSort();
+	 //DoSort();
+	 
 	
-    /*int i;
-	for (i = 0; i < numberOfSizesToUse; i++)
+    int i;
+	for (i = 0; i < 3; i++)
 	{
 		int currentSizeUse = sizesUseForTests[i];
 		int tab[currentSizeUse];
-		
+
 		//initialization
 		fillWithRandomNumbers(tab, currentSizeUse);
-		
+		display(tab, currentSizeUse);
+		/*
 		//test
 		begin = clock();
 		dichotomousInsertionSort(tab, currentSizeUse);
-		end = clock();
+		end = clock();*/
+		permutationSort(tab, currentSizeUse);
+		display(tab, currentSizeUse);
 		
 		//show time
-		displayTimeElapsedInMilliseconds();
-	}*/
+		//displayTimeElapsedInMilliseconds();
+	}
     return 0;
 }
