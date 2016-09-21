@@ -16,6 +16,8 @@
 #define MAX 1000000
 typedef int TABLEAU[MAX];
 
+clock_t begin, end;
+
 /**
  * \fn fillWithRandomNumbers (int tab[], int size)
  * \brief Fill a table with numbers randomly generated.
@@ -34,6 +36,7 @@ void fillWithRandomNumbers (int tab[], int size)
 
 /**
  * \fn display (int tab[], int size)
+ * \author Julien TEULLE
  * \brief Show the content of a table with one element per line.
  * \param tab The table which is display.
  * \param size The size of tab.
@@ -47,13 +50,80 @@ void display (int tab[], int size)
     }
 }
 
+/**
+ * \fn getSequentialPosition (int i, int tab[])
+ * \author Julien TEULLE
+ * \brief obtain the index of the table where a value must be insert
+ * with a sequential way.
+ * \param tab The table which is concern.
+ * \param size The size of tab.
+ */
+int getSequentialPosition (int i, int tab[])
+{
+	int p = 0;
+	while (tab[p] < tab[i]) 
+		p++;
+	return p;
+}
+
+/**
+ * \fn getDichotomousPosition (int i, int tab[])
+ * \author Julien TEULLE
+ * \brief obtain the index of the table where a value must be insert 
+ * with a dichotomous way.
+ * \param tab The table which is concern.
+ * \param size The size of tab.
+ */
+int getDichotomousPosition (int i, int tab[])
+{
+	int left, right, middle;
+	left = 0;
+	right = i;
+	while (left < right)
+	{
+		middle = (left + right) / 2;
+		if (tab[i] <= tab[middle]) 
+			right = middle;
+		else
+			left = middle + 1;
+	}
+	return left;
+}
+	
+/**
+ * \fn sequentialInsertionSort (int tab[], int size)
+ * \author Julien TEULLE
+ * \brief Sort a table
+ * \param tab The table which is sort.
+ * \param size The size of tab.
+ */
 void sequentialInsertionSort (int tab[], int size)
 {
 	int i, p, x;
 	for (i = 1; i < size; i++)
 	{
-		p = 0;
-		while (tab[p] < tab[i]) p++;
+		p = getSequentialPosition(i, tab);
+		x = tab[i];
+		int j;
+		for (j = i - 1; p <= j; j--)
+			tab[j+1] = tab[j];
+		tab[p] = x;
+	}
+}
+
+/**
+ * \fn dichotomousInsertionSort (int tab[], int size)
+ * \author Julien TEULLE
+ * \brief Sort a table
+ * \param tab The table which is sort.
+ * \param size The size of tab.
+ */
+void dichotomousInsertionSort (int tab[], int size)
+{
+	int i, p, x;
+	for (i = 1; i < size; i++)
+	{
+		p = getDichotomousPosition(i, tab);
 		x = tab[i];
 		int j;
 		for (j = i - 1; p <= j; j--)
@@ -74,16 +144,16 @@ void CreateCSV ()
 	
 	char * Titre[23];
 	
-	Titre[0] = "Nom du tri";
-	Titre[1] = "Taille Tableau";
-	Titre[2] = "Temps Test 1";
-	Titre[3] = "Temps Test 2";
-	Titre[4] = "Temps Test 3";
-	Titre[5] = "Temps Test 4";
-	Titre[6] = "Temps Test 5";
-	Titre[7] = "Temps Test 6";
-	Titre[8] = "Temps Test 7";
-	Titre[9] = "Temps Test 8";
+	Titre[0]  = "Nom du tri";
+	Titre[1]  = "Taille Tableau";
+	Titre[2]  = "Temps Test 1";
+	Titre[3]  = "Temps Test 2";
+	Titre[4]  = "Temps Test 3";
+	Titre[5]  = "Temps Test 4";
+	Titre[6]  = "Temps Test 5";
+	Titre[7]  = "Temps Test 6";
+	Titre[8]  = "Temps Test 7";
+	Titre[9]  = "Temps Test 8";
 	Titre[10] = "Temps Test 9";
 	Titre[11] = "Temps Test 10";
 	Titre[12] = "Temps Test 11";
@@ -115,7 +185,6 @@ FILE* OpenCSV ()
 		printf("Impossible d'ouvrir le fichier\n");
 		exit(1);
 	}
-	
 	return ResultTest;
 }
 
@@ -124,17 +193,46 @@ void CloseCSV (FILE * ResultTest)
 	fclose(ResultTest);
 }
 
+/**
+ * \fn getTimeElapsedInMilliseconds()
+ * \author Julien TEULLE
+ * \brief Calculate the time elapsed between begin and end in 
+ * milliseconds.
+ * \return The value of this time
+ */
+double getTimeElapsedInMilliseconds()
+{
+	return (((double)(end - begin)) / CLOCKS_PER_SEC) * 1000.000;
+}
+
+/**
+ * \fn displayTimeElapsedInMilliseconds()
+ * \author Julien TEULLE
+ * \brief Show the time elapsed between begin and end.
+ */
+void displayTimeElapsedInMilliseconds()
+{
+	 printf("Execution time : %fms", getTimeElapsedInMilliseconds());
+}
+
 int main ()
 {
-    clock_t begin, end;
     begin = clock();
+    
     int size = 10;
+    
     int tab[size];
+    //initialization
     fillWithRandomNumbers(tab, size);
     display(tab, size);
-    sequentialInsertionSort(tab, size);
+    
+    //test
+    dichotomousInsertionSort(tab, size);
     display(tab, size);
+    
     end = clock();
-    printf("Execution time : %fms", (((double)(end - begin)) / CLOCKS_PER_SEC) * 1000.0);
+    
+    //show time
+    displayTimeElapsedInMilliseconds();
     return 0;
 }
