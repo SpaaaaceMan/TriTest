@@ -14,9 +14,12 @@
 #include "stdio.h"
 
 #define MAX 1000000
+#define numberOfSizesToUse 15
 typedef int TABLEAU[MAX];
 
+//Global variables
 clock_t begin, end;
+int sizesUseForTests[numberOfSizesToUse];
 
 /**
  * \fn fillWithRandomNumbers (int tab[], int size)
@@ -212,7 +215,7 @@ double getTimeElapsedInMilliseconds()
  */
 void displayTimeElapsedInMilliseconds()
 {
-	 printf("Execution time : %fms", getTimeElapsedInMilliseconds());
+	 printf("Execution time : %fms\n", getTimeElapsedInMilliseconds());
 }
 
 void DoSort (FILE * ResultTest, int size, int tab[])
@@ -235,27 +238,48 @@ void DoSort (FILE * ResultTest, int size, int tab[])
 		fprintf(Result, "%f;", Time[i]);
 	}	
 	
-	fprintf(Result, "%f\n", CalcAverage(Time));
+	//fprintf(Result, "%f\n", CalcAverage(Time));
+}
+
+/**
+ * \fn initSizesUseForTests ()
+ * \author Julien TEULLE
+ * \brief Initialize the values of sizesUseForTests for the tests.
+ */
+void initSizesUseForTests ()
+{
+	sizesUseForTests[0]  = 100;
+	sizesUseForTests[1]  = 500;
+	sizesUseForTests[2]  = 5000;
+	sizesUseForTests[3]  = 10000;
+	sizesUseForTests[4]  = 50000;
+	sizesUseForTests[5]  = 100000;
+	int i;
+	for (i = 6; i < numberOfSizesToUse; i++)
+		sizesUseForTests[i] = sizesUseForTests[i-1] + 100000;
+	for (i = 0; i < numberOfSizesToUse; i++)
+		sizesUseForTests[i] /= 100;
 }
 
 int main ()
 {
-    begin = clock();
-    
-    int size = 10;
-    
-    int tab[size];
-    //initialization
-    fillWithRandomNumbers(tab, size);
-    display(tab, size);
-    
-    //test
-    dichotomousInsertionSort(tab, size);
-    display(tab, size);
-    
-    end = clock();
-    
-    //show time
-    displayTimeElapsedInMilliseconds();
+	initSizesUseForTests();
+    int i;
+	for (i = 0; i < numberOfSizesToUse; i++)
+	{
+		int currentSizeUse = sizesUseForTests[i];
+		int tab[currentSizeUse];
+		
+		//initialization
+		fillWithRandomNumbers(tab, currentSizeUse);
+		
+		//test
+		begin = clock();
+		dichotomousInsertionSort(tab, currentSizeUse);
+		end = clock();
+		
+		//show time
+		displayTimeElapsedInMilliseconds();
+	}
     return 0;
 }
