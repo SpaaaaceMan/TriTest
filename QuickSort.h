@@ -1,9 +1,4 @@
-void Swap (int tab[], int a, int b)
-{
-	int tmp = tab[a];
-	tab[a] = tab[b];
-	tab[b] = tmp;
-}
+
 
 void PlacePivot (int left, int right, int tab[], int * pivot)
 {
