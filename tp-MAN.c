@@ -1,7 +1,7 @@
 /**
  * \file tp-MAN.c
  * \brief Programme de tests.
- * \author Julien TEULLE
+ * \author Julien TEULLE, Kurt SAVIO
  * \version 1
  * \date 14/09/16
  *
@@ -9,6 +9,7 @@
  *
  */
 
+#include "man-util.h"
 #include "stdlib.h"
 #include "time.h"
 #include "stdio.h"
@@ -16,6 +17,8 @@
 #include "SequentialInserstionSort.h"
 #include "DichotomousInserstionSort.h"
 #include "mergeSort.h"
+#include "SelectionSwapSort.h"
+#include "bubbleSort.h"
 
 #define MAX 1000000
 #define numberOfSizesToUse 15
@@ -208,7 +211,9 @@ void DoSort ()
 	FILE * Result = OpenCSV();
 	
 	//insertion sequentiel, insertion dichotomique, selection-permutation, bulles, fusion, quicksort, arbre binaire de recherche, tas
-	//        DONE        ,         DONE          ,                      ,       ,  DONE ,   DONE   ,                           ,     
+	//        DONE        ,         DONE          ,         DONE         ,  DONE ,  DONE ,   DONE   ,                           ,     
+	
+	//Tout Doux : arbre binaire de recherche, tas, insertion sequentielle avec liste chainée
 
 	for (j = 0; j < 15; ++j)
 	{
@@ -261,17 +266,67 @@ void DoSort ()
 	for (j = 0; j < 15; ++j)
 	{
 		size = sizesUseForTests[j];
+		printf ("Tri Par Selection/Permutation - %d\n", size);
+		int tab[size];
+		fprintf(Result, "Tri Par Selection/Permutation;%d;", size);
+		for (i = 0; i < 20; ++i)
+		{
+			fillWithRandomNumbers(tab, size);
+			//display(tab, size);
+			begin = clock();
+			SelectionSwapSort(tab, size);
+			end = clock();
+			//display(tab, size);
+			Time[i] = getTimeElapsedInMilliseconds();
+			fprintf(Result, "%f;", Time[i]);
+			TotalTime += Time[i];
+			if (TotalTime > 300000)
+				break;
+		}
+		printf("20 test fait en %f ms \n\n", TotalTime);
+		fprintf(Result, "%f\n", CalcAverage(Time));
+		TotalTime = 0;
+		ResetTime(Time);
+	}
+	
+	for (j = 0; j < 15; ++j)
+	{
+		size = 10; //sizesUseForTests[j];
+		printf ("Tri A Bulles - %d\n", size);
+		int tab[size];
+		fprintf(Result, "Tri A Bulles;%d;", size);
+		for (i = 0; i < 1/*20*/; ++i)
+		{
+			fillWithRandomNumbers(tab, size);
+			display(tab, size);
+			begin = clock();
+			bubbleSort(tab, size);
+			end = clock();
+			display(tab, size);
+			Time[i] = getTimeElapsedInMilliseconds();
+			fprintf(Result, "%f;", Time[i]);
+			TotalTime += Time[i];
+			if (TotalTime > 300000)
+				break;
+		}
+		printf("20 test fait en %f ms \n\n", TotalTime);
+		fprintf(Result, "%f\n", CalcAverage(Time));
+		TotalTime = 0;
+		ResetTime(Time);
+	}
+	
+	for (j = 0; j < 15; ++j)
+	{
+		size = sizesUseForTests[j];
 		printf ("Tri Par Fusion - %d\n", size);
 		int tab[size];
 		fprintf(Result, "Tri Par Fusion;%d;", size);
 		for (i = 0; i < 20; ++i)
 		{
 			fillWithRandomNumbers(tab, size);
-			display(tab, size);
 			begin = clock();
 			LaunchMS(tab, size);
 			end = clock();
-			display(tab, size);
 			Time[i] = getTimeElapsedInMilliseconds();
 			fprintf(Result, "%f;", Time[i]);
 			TotalTime += Time[i];
@@ -306,7 +361,8 @@ void DoSort ()
 		fprintf(Result, "%f\n", CalcAverage(Time));
 		TotalTime = 0;
 		ResetTime(Time);
-	}	
+	}
+	
 	
 	CloseCSV(Result);
 }

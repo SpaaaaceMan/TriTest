@@ -1,5 +1,3 @@
-
-
 void PlacePivot (int left, int right, int tab[], int * pivot)
 {
 	*pivot = left;
@@ -13,9 +11,9 @@ void PlacePivot (int left, int right, int tab[], int * pivot)
 /**
  * \fn QuickSort (int left, int right, int tab[])
  * \author Kurt SAVIO
- * \brief Sort a table
- * \param tab The table which is sort.
- * \param size The size of tab.
+ * \brief 
+ * \param 
+ * \param 
  */
 void QuickSort (int left, int right, int tab[])
 {
