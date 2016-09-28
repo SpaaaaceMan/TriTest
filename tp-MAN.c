@@ -213,7 +213,7 @@ void DoSort ()
 	//insertion sequentiel, insertion dichotomique, selection-permutation, bulles, fusion, quicksort, arbre binaire de recherche, tas
 	//        DONE        ,         DONE          ,         DONE         ,  DONE ,  DONE ,   DONE   ,                           ,     
 	
-	//Tout Doux : arbre binaire de recherche, tas, insertion sequentielle avec liste chainée
+	//Tout Doux : arbre binaire de recherche, tas, insertion sequentielle avec liste chainée, gestion du timeout (5min)
 
 	for (j = 0; j < 15; ++j)
 	{
