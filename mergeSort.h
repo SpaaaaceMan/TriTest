@@ -38,3 +38,8 @@ void mergeSort (int left, int right, int tab[])
         merge(left, middle, right, tab);
     }
 }
+
+void LaunchMS (int tab[], int size)
+{
+	mergeSort(0, size - 1, tab);
+}

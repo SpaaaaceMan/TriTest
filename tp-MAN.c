@@ -12,6 +12,10 @@
 #include "stdlib.h"
 #include "time.h"
 #include "stdio.h"
+#include "QuickSort.h"
+#include "SequentialInserstionSort.h"
+#include "DichotomousInserstionSort.h"
+#include "mergeSort.h"
 
 #define MAX 1000000
 #define numberOfSizesToUse 15
@@ -51,88 +55,6 @@ void display (int tab[], int size)
     {
         printf("%d %d\n", i, tab[i]);
     }
-}
-
-/**
- * \fn getSequentialPosition (int i, int tab[])
- * \author Julien TEULLE
- * \brief obtain the index of the table where a value must be insert
- * with a sequential way.
- * \param tab The table which is concern.
- * \param size The size of tab.
- */
-int getSequentialPosition (int i, int tab[])
-{
-	int p = 0;
-	while (tab[p] < tab[i]) 
-		p++;
-	return p;
-}
-
-/**
- * \fn getDichotomousPosition (int i, int tab[])
- * \author Julien TEULLE
- * \brief obtain the index of the table where a value must be insert 
- * with a dichotomous way.
- * \param tab The table which is concern.
- * \param size The size of tab.
- */
-int getDichotomousPosition (int i, int tab[])
-{
-	int left, right, middle;
-	left = 0;
-	right = i;
-	while (left < right)
-	{
-		middle = (left + right) / 2;
-		if (tab[i] <= tab[middle]) 
-			right = middle;
-		else
-			left = middle + 1;
-	}
-	return left;
-}
-	
-/**
- * \fn sequentialInsertionSort (int tab[], int size)
- * \author Julien TEULLE
- * \brief Sort a table
- * \param tab The table which is sort.
- * \param size The size of tab.
- */
-void sequentialInsertionSort (int tab[], int size)
-{
-	int i, p, x;
-	for (i = 1; i < size; i++)
-	{
-		p = getSequentialPosition(i, tab);
-		x = tab[i];
-		int j;
-		for (j = i - 1; p <= j; j--)
-			tab[j+1] = tab[j];
-		tab[p] = x;
-	}
-}
-
-/**
- * \fn dichotomousInsertionSort (int tab[], int size)
- * \author Julien TEULLE
- * \brief Sort a table
- * \param tab The table which is sort.
- * \param size The size of tab.
- */
-void dichotomousInsertionSort (int tab[], int size)
-{
-	int i, p, x;
-	for (i = 1; i < size; i++)
-	{
-		p = getDichotomousPosition(i, tab);
-		x = tab[i];
-		int j;
-		for (j = i - 1; p <= j; j--)
-			tab[j+1] = tab[j];
-		tab[p] = x;
-	}
 }
 
 /**
@@ -284,10 +206,14 @@ void DoSort ()
 	int size;
 	double Time[20];
 	FILE * Result = OpenCSV();
+	
+	//insertion sequentiel, insertion dichotomique, selection-permutation, bulles, fusion, quicksort, arbre binaire de recherche, tas
+	//        DONE        ,         DONE          ,                      ,       ,  DONE ,   DONE   ,                           ,     
+
 	for (j = 0; j < 15; ++j)
 	{
 		size = sizesUseForTests[j];
-		printf ("%d\n%d\n", size, sizesUseForTests[j]);
+		printf ("Tri Par Insertion Séquentielle - %d\n", size);
 		int tab[size];
 		fprintf(Result, "Tri Par Insertion Séquentielle;%d;", size);
 		for (i = 0; i < 20; ++i)
@@ -302,6 +228,7 @@ void DoSort ()
 			if (TotalTime > 300000) // 5min = 300000ms
 				break;
 		}//NULL quand temps > 5min
+		printf("20 test fait en %f ms \n\n", TotalTime);
 		fprintf(Result, "%f\n", CalcAverage(Time));
 		TotalTime = 0;
 		ResetTime(Time);
@@ -310,7 +237,7 @@ void DoSort ()
 	for (j = 0; j < 15; ++j)
 	{
 		size = sizesUseForTests[j];
-		printf ("%d\n%d\n", size, sizesUseForTests[j]);
+		printf ("Tri Par Insertion Dichotomique - %d\n", size);
 		int tab[size];
 		fprintf(Result, "Tri Par Insertion Dichotomique;%d;", size);
 		for (i = 0; i < 20; ++i)
@@ -325,9 +252,61 @@ void DoSort ()
 			if (TotalTime > 300000)
 				break;
 		}
+		printf("20 test fait en %f ms \n\n", TotalTime);
 		fprintf(Result, "%f\n", CalcAverage(Time));
+		TotalTime = 0;
 		ResetTime(Time);
 	}
+	
+	for (j = 0; j < 15; ++j)
+	{
+		size = sizesUseForTests[j];
+		printf ("Tri Par Fusion - %d\n", size);
+		int tab[size];
+		fprintf(Result, "Tri Par Fusion;%d;", size);
+		for (i = 0; i < 20; ++i)
+		{
+			fillWithRandomNumbers(tab, size);
+			display(tab, size);
+			begin = clock();
+			LaunchMS(tab, size);
+			end = clock();
+			display(tab, size);
+			Time[i] = getTimeElapsedInMilliseconds();
+			fprintf(Result, "%f;", Time[i]);
+			TotalTime += Time[i];
+			if (TotalTime > 300000) // 5min = 300000ms
+				break;
+		}//NULL quand temps > 5min
+		printf("20 test fait en %f ms \n\n", TotalTime);
+		fprintf(Result, "%f\n", CalcAverage(Time));
+		TotalTime = 0;
+		ResetTime(Time);
+	}
+	
+	for (j = 0; j < 15; ++j)
+	{
+		size = sizesUseForTests[j];
+		printf ("Tri Rapide - %d\n", size);
+		int tab[size];
+		fprintf(Result, "Tri Rapide;%d;", size);
+		for (i = 0; i < 20; ++i)
+		{
+			fillWithRandomNumbers(tab, size);
+			begin = clock();
+			LaunchQS(tab, size);
+			end = clock();
+			Time[i] = getTimeElapsedInMilliseconds();
+			fprintf(Result, "%f;", Time[i]);
+			TotalTime += Time[i];
+			if (TotalTime > 300000) // 5min = 300000ms
+				break;
+		}//NULL quand temps > 5min
+		printf("20 test fait en %f ms \n\n", TotalTime);
+		fprintf(Result, "%f\n", CalcAverage(Time));
+		TotalTime = 0;
+		ResetTime(Time);
+	}	
 	
 	CloseCSV(Result);
 }
