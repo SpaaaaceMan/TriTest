@@ -15,7 +15,7 @@
 #include "stdio.h"
 #include "QuickSort.h"
 #include "SequentialInserstionSort.h"
-#include "DichotomousInserstionSort.h"
+#include "DichotomousInsertionSort.h"
 #include "mergeSort.h"
 #include "SelectionSwapSort.h"
 #include "bubbleSort.h"
