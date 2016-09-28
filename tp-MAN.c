@@ -14,7 +14,7 @@
 #include "time.h"
 #include "stdio.h"
 #include "QuickSort.h"
-#include "SequentialInserstionSort.h"
+#include "SequentialInsertionSort.h"
 #include "DichotomousInsertionSort.h"
 #include "mergeSort.h"
 #include "SelectionSwapSort.h"
