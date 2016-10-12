@@ -14,6 +14,7 @@
 #include "stdlib.h"
 #include "time.h"
 #include "stdio.h"
+#include "Tri.h"
 
 #include "QuickSort.h"
 #include "SequentialInsertionSort.h"
@@ -21,6 +22,7 @@
 #include "mergeSort.h"
 #include "SelectionSwapSort.h"
 #include "bubbleSort.h"
+
 
 /***********CONSTANTS***********/
 #define MAX 1000000
@@ -174,16 +176,39 @@ void displayTimeElapsedInMilliseconds()
  * \param Time[] : An array containing the 20 time (max) of a sort
  * \return The average of the 20 time.
  */
-double CalcAverage (double Time[])
+double CalcAverage (double Time[], int Done)
 {
     double Average = 0;
     int i;
 
-    for (i = 0; i < 20; ++i)
+    for (i = 0; i < Done; ++i)
         Average += Time[i];
 
-    Average /= 20;
+    Average /= Done;
     return Average;
+}
+
+int CalcMinute (double Time)
+{
+	return Time / 60000;
+}
+
+int CalcSeconde (double Time)
+{
+	return Time / 1000;
+}
+
+void CalcTotalTime (double Time, int Result[])
+{
+	int Minute = CalcMinute(Time);
+	Time -= Minute * 60000;
+	
+	int Seconde = CalcSeconde(Time);
+	Time -= Seconde * 1000;
+	
+	Result[0] = Minute;
+	Result[1] = Seconde;
+	Result[2] = Time;
 }
 
 /**
@@ -199,7 +224,7 @@ void ResetTime(double Time[])
         Time[i] = 0;		
 }
 
-**
+/**
  * \fn DoSort ()
  * \author Kurt SAVIO
  * \brief Create, fill and sort a table for each sort and size, 20 time 
@@ -214,9 +239,10 @@ void DoSort (TRI * t)
     FILE * Result = OpenCSV();
 
     //insertion sequentiel, insertion dichotomique, selection-permutation, bulles, fusion, quicksort, arbre binaire de recherche, tas
-    //        DONE        ,         DONE          ,         DONE         ,  DONE ,  DONE ,   DONE   ,                           ,     
+    //        DONE        ,         DONE          ,         DONE         ,  DONE ,  DONE ,   DONE   ,                           ,ToTest   
 
-    //Tout Doux : arbre binaire de recherche, tas, insertion sequentielle avec liste chainée, gestion du timeout (5min)
+    //Tout Doux : arbre binaire de recherche, insertion sequentielle avec liste chainée
+    
     for (j = 0; j < 15; ++j)
     {
         size = sizesUseForTests[j];
@@ -234,14 +260,35 @@ void DoSort (TRI * t)
             TotalTime += Time[i];
             if (TotalTime > 300000) // 5min = 300000ms
                 break;
-        }//NULL quand temps > 5min
-        printf("20 test fait en %f ms \n\n", TotalTime);
-        fprintf(Result, "%f\n", CalcAverage(Time));
+        }
+        
+        int Res[3];
+        CalcTotalTime(TotalTime, Res);
+        
+        if (i != 20)
+        {
+			printf ("Temps limite dépassé : %d:%d.%d\n\n", Res[0], Res[1], Res[2]);
+			printf ("Uniquement %d tests fait\n\n", i);			
+			
+		}
+		else
+			printf("20 test fait : %d:%d.%d\n\n", Res[0], Res[1], Res[2]);
+		
+		int n = i;
+		
+		while (n < 20)
+		{
+			fprintf(Result, "NULL;");
+			n++;
+		}
+		
+        fprintf(Result, "%f\n", CalcAverage(Time, i));
         TotalTime = 0;
         ResetTime(Time);
     }
     CloseCSV(Result);
 }
+
 
 /**
  * \fn initSizesUseForTests ()
@@ -270,18 +317,18 @@ int main ()
     initSizesUseForTests();
 
     TRI Sequential;
-    TRI Dichotomous;
+    //TRI Dichotomous;
     TRI SelectionSwap;
     TRI Bubbles;
     TRI Merge;
     TRI Quicksort = QuickSort_Create();
-    /*
+    
        DoSort(&Sequential);
-       DoSort(&Dichotomous);
+       //DoSort(&Dichotomous);
        DoSort(&SelectionSwap);
        DoSort(&Bubbles);
        DoSort(&Merge);
        DoSort(&Quicksort);
-       */
+       
     return 0;
 }

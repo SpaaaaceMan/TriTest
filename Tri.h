@@ -1,6 +1,10 @@
-struct _TRI {                                                                                                                          
+typedef struct _TRI {                                                                                                                          
     char* name;
-    void(*Free)(struct TRI*);
     void (*sort)(int tab[], int sizeOfTab);
 } TRI;
 
+void LaunchQS (int tab[], int size);
+void sequentialInsertionSort (int tab[], int size);
+void LaunchMS (int tab[], int size);
+void SelectionSwapSort (int tab[], int size);
+void bubbleSort (int tab[], int size);
