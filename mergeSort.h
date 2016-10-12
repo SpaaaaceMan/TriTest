@@ -1,6 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+TRI MergeSort_Create()
+{
+    TRI This;                                                                                                                                 
+    This.name = "Merge Sort";
+    This.sort = LaunchMS;
+    return This;
+}
+
 void merge (int left, int middle, int right, int tab[])
 {
     int *tmp = (int*)malloc((right - left + 1) * sizeof(int));
@@ -41,5 +49,5 @@ void mergeSort (int left, int right, int tab[])
 
 void LaunchMS (int tab[], int size)
 {
-	mergeSort(0, size - 1, tab);
+    mergeSort(0, size - 1, tab);
 }

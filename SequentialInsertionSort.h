@@ -1,3 +1,11 @@
+TRI SequentialInsertionSort_Create()
+{ 
+    TRI This;                                                                                                                                 
+    This.name = "Sequential Insertion Sort";
+    This.sort = sequentialInsertionSort;
+    return This;
+}
+
 /**
  * \fn getSequentialPosition (int i, int tab[])
  * \author Julien TEULLE
@@ -8,10 +16,10 @@
  */
 int getSequentialPosition (int i, int tab[])
 {
-	int p = 0;
-	while (tab[p] < tab[i]) 
-		p++;
-	return p;
+    int p = 0;
+    while (tab[p] < tab[i]) 
+        p++;
+    return p;
 }
 
 /**
@@ -23,14 +31,14 @@ int getSequentialPosition (int i, int tab[])
  */
 void sequentialInsertionSort (int tab[], int size)
 {
-	int i, p, x;
-	for (i = 1; i < size; i++)
-	{
-		p = getSequentialPosition(i, tab);
-		x = tab[i];
-		int j;
-		for (j = i - 1; p <= j; j--)
-			tab[j+1] = tab[j];
-		tab[p] = x;
-	}
+    int i, p, x;
+    for (i = 1; i < size; i++)
+    {
+        p = getSequentialPosition(i, tab);
+        x = tab[i];
+        int j;
+        for (j = i - 1; p <= j; j--)
+            tab[j+1] = tab[j];
+        tab[p] = x;
+    }
 }

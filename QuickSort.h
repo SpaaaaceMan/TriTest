@@ -1,3 +1,11 @@
+TRI QuickSort_Create()
+{
+       TRI This;
+       This.name = "Quick Sort";
+       This.sort = LaunchQS;
+       return This;
+}
+
 void PlacePivot (int left, int right, int tab[], int * pivot)
 {
 	*pivot = left;

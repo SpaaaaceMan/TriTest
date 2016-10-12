@@ -83,17 +83,7 @@ void CreateCSV ()
         exit(1);
     }
 
-    char * Titre[numberOfTitles];
-    int i;
-    for (i = 0; i < numberOfTitles; i++) {
-        char* title = "Temps du test ";
-        char* number;
-        //sprintf(title, "%d", i);
-        //strcat(title, number);
-        Titre[i] = title; 
-        printf("%s\n", title);
-    }
-    /*
+    char* Titre[numberOfTitles];
     Titre[0]  = "Nom du tri";
     Titre[1]  = "Taille Tableau";
     Titre[2]  = "Temps Test 1";
@@ -117,12 +107,11 @@ void CreateCSV ()
     Titre[20] = "Temps Test 19";
     Titre[21] = "Temps Test 20";
     Titre[22] = "Moyenne";
-    
+    int i; 
     for (i = 0; i < numberOfTitles - 1; i++) {
         fprintf(ResultTest, "%s;", Titre[i]);
     }
     fprintf(ResultTest, "%s\n", Titre[22]);
-*/
     fclose(ResultTest);
 }
 
@@ -210,12 +199,7 @@ void ResetTime(double Time[])
         Time[i] = 0;		
 }
 
-typedef struct _TRI {
-    char* name;
-    void (*sort)(int tab[], int sizeOfTab);
-} TRI;
-
-/**
+**
  * \fn DoSort ()
  * \author Kurt SAVIO
  * \brief Create, fill and sort a table for each sort and size, 20 time 
@@ -290,14 +274,14 @@ int main ()
     TRI SelectionSwap;
     TRI Bubbles;
     TRI Merge;
-    TRI Quicksort;
-/*
-    DoSort(&Sequential);
-    DoSort(&Dichotomous);
-    DoSort(&SelectionSwap);
-    DoSort(&Bubbles);
-    DoSort(&Merge);
-    DoSort(&Quicksort);
-*/
+    TRI Quicksort = QuickSort_Create();
+    /*
+       DoSort(&Sequential);
+       DoSort(&Dichotomous);
+       DoSort(&SelectionSwap);
+       DoSort(&Bubbles);
+       DoSort(&Merge);
+       DoSort(&Quicksort);
+       */
     return 0;
 }
