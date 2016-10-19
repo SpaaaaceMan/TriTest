@@ -22,6 +22,7 @@
 #include "mergeSort.h"
 #include "SelectionSwapSort.h"
 #include "bubbleSort.h"
+#include "StackSort.h"
 
 
 /***********CONSTANTS***********/
@@ -188,16 +189,37 @@ double CalcAverage (double Time[], int Done)
     return Average;
 }
 
+/**
+ * \fn CalcMinute (double Time)
+ * \author Kurt SAVIO
+ * \brief Calculate how many minute there are in "Time" milliseconds
+ * \param Time : a time in milliseconds
+ * \return minutes in "Time" ms.
+ */
 int CalcMinute (double Time)
 {
 	return Time / 60000;
 }
 
+/**
+ * \fn CalcSeconde (double Time)
+ * \author Kurt SAVIO
+ * \brief Calculate how many second there are in "Time" milliseconds
+ * \param Time : a time in milliseconds
+ * \return seconds in "Time" ms.
+ */
 int CalcSeconde (double Time)
 {
 	return Time / 1000;
 }
 
+/**
+ * \fn CalcTotalTime (double Time, int Result[])
+ * \author Kurt SAVIO
+ * \brief Convert a time in milliseconds to minute, seconds and milliseconds
+ * \param Time : a time in milliseconds
+ * \param Result[] : an array in which one minute, second and milliseconds will be stocked
+ */
 void CalcTotalTime (double Time, int Result[])
 {
 	int Minute = CalcMinute(Time);
@@ -225,6 +247,21 @@ void ResetTime(double Time[])
 }
 
 /**
+ * \fn IsSort (int tab[], int size)
+ * \author Kurt SAVIO
+ * \brief Check if a table is sort. If not, it shows where and the said values
+ * \param tab[] : a table contianing random numbers
+ * \param size : size of the table
+ */
+void IsSort (int tab[], int size)
+{
+	int i = 0;
+	for ( ; i < size - 1; ++i)
+		if (tab[i] > tab[i + 1])
+			printf("Tableau Non Trié en %d ! \nValeur : %d > %d \n", i, tab[i], tab[i + 1]);
+}
+
+/**
  * \fn DoSort ()
  * \author Kurt SAVIO
  * \brief Create, fill and sort a table for each sort and size, 20 time 
@@ -239,7 +276,7 @@ void DoSort (TRI * t)
     FILE * Result = OpenCSV();
 
     //insertion sequentiel, insertion dichotomique, selection-permutation, bulles, fusion, quicksort, arbre binaire de recherche, tas
-    //        DONE        ,         DONE          ,         DONE         ,  DONE ,  DONE ,   DONE   ,                           ,ToTest   
+    //        DONE        ,         DONE          ,         DONE         ,  DONE ,  DONE ,   DONE   ,            ???            , DONE   
 
     //Tout Doux : arbre binaire de recherche, insertion sequentielle avec liste chainée
     
@@ -255,6 +292,7 @@ void DoSort (TRI * t)
             begin = clock();
             t->sort(tab, size);
             end = clock();
+            IsSort(tab, size);
             Time[i] = getTimeElapsedInMilliseconds();
             fprintf(Result, "%f;", Time[i]);
             TotalTime += Time[i];
@@ -267,14 +305,14 @@ void DoSort (TRI * t)
         
         if (i != 20)
         {
-			printf ("Temps limite dépassé : %d:%d.%d\n\n", Res[0], Res[1], Res[2]);
-			printf ("Uniquement %d tests fait\n\n", i);			
+			printf ("Temps limite dépassé : %02d:%02d.%03d ms\n", Res[0], Res[1], Res[2]);
+			printf ("Uniquement %d tests fait\n\n", i + 1);
 			
 		}
 		else
-			printf("20 test fait : %d:%d.%d\n\n", Res[0], Res[1], Res[2]);
+			printf("20 test fait : %02d:%02d.%03d ms\n\n", Res[0], Res[1], Res[2]);
 		
-		int n = i;
+		int n = i + 1;
 		
 		while (n < 20)
 		{
@@ -306,8 +344,8 @@ void initSizesUseForTests ()
     int i;
     for (i = 6; i < numberOfSizesToUse; i++)
         sizesUseForTests[i] = sizesUseForTests[i-1] + 100000;
-    for (i = 0; i < numberOfSizesToUse; i++)
-        sizesUseForTests[i] /= 100;
+    /*for (i = 0; i < numberOfSizesToUse; i++)
+        sizesUseForTests[i] /= 100;*/
 }
 
 int main ()
@@ -316,19 +354,23 @@ int main ()
 
     initSizesUseForTests();
 
-    TRI Sequential;
-    //TRI Dichotomous;
-    TRI SelectionSwap;
-    TRI Bubbles;
-    TRI Merge;
-    TRI Quicksort = QuickSort_Create();
+    TRI Sequential = SequentialInsertionSort_Create();
+    TRI Dichotomous = DichotomousSort_Create();
+    TRI SelectionSwap = SelectionSwapSort_Create();
+    TRI Bubbles = BubbleSort_Create();
+    TRI Merge = MergeSort_Create();
+    TRI Quick = QuickSort_Create();
+    TRI Stack = StackSort_Create();
     
-       DoSort(&Sequential);
-       //DoSort(&Dichotomous);
-       DoSort(&SelectionSwap);
-       DoSort(&Bubbles);
-       DoSort(&Merge);
-       DoSort(&Quicksort);
+    
+    DoSort(&Sequential);
+	DoSort(&Dichotomous);
+	DoSort(&SelectionSwap);
+	DoSort(&Bubbles);
+	DoSort(&Merge);
+	DoSort(&Quick);
+	DoSort(&Stack);
+	
        
     return 0;
 }

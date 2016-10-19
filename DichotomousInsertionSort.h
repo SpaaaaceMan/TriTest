@@ -1,3 +1,11 @@
+TRI DichotomousSort_Create()
+{
+       TRI This;
+       This.name = "Dichotomous Sort";
+       This.sort = dichotomousInsertionSort;
+       return This;
+}
+
 /**
  * \fn getDichotomousPosition (int i, int tab[])
  * \author Julien TEULLE
