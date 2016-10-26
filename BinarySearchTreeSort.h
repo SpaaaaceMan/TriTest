@@ -1,33 +1,59 @@
 TRI Binary_search_tree_sort_Create()
 {
     TRI This;
-    This.name = "Bubble Sort";
-    This.sort = bubbleSort;
+    This.name = "Binary search tree";
+    This.sort = binary_search_tree_sort; 
     return This;
 }
 
-void add_leaf(int tab[], int index, int value)       
+struct node
 {
-    int left = index*2+1;
-    int right = index*2+2;
-    if (value < tab[index]) {
-        add_leaf(tab, left, value);
+    struct node *rightchild;
+    int value;
+    struct node *leftchild;
+};
+
+void insert(struct node **source, int value)
+{
+    if(*source == NULL)
+    {
+        *source = malloc(sizeof(struct node));
+        (*source)->leftchild = NULL;
+        (*source)->value = value;
+        (*source)->rightchild = NULL;
+        return;
     }
-    else {
-        add_leaf(tab, right, value);
+    else
+    {
+        if(value < (*source)->value)
+            insert(&((*source)->leftchild), value);
+        else
+            insert(&((*source)->rightchild), value);
     }
-    tab[index] = value;
     return;
 }
-void build_binary_search_tree(int tab[], int size)
+
+int indexOrder = -1;
+
+void inorder(struct node *source, int tab[])
 {
-    int i;
-    for (i = 0; i < size; i++) {
-        add_leaf(tab, i, tab[i]);
+    if(source != NULL)
+    {
+        inorder(source->leftchild, tab);
+        tab[++indexOrder] = source->value;
+        inorder(source->rightchild, tab);
     }
+    else
+        return;
 }
 
-void binary_search_tree_sort(int tab[], int size) 
+void binary_search_tree_sort(int tab[], int size)
 {
-    build_binary_search_tree(tab, size);
+    int i;
+    struct node *root;
+    root = NULL;
+    for (i = 0; i < size; i++) {
+        insert(&root, tab[i]);
+    }
+    inorder(root, tab);
 }
