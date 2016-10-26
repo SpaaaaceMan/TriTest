@@ -23,13 +23,14 @@
 #include "SelectionSwapSort.h"
 #include "bubbleSort.h"
 #include "StackSort.h"
-
+#include "BinarySearchTreeSort.h"
 
 /***********CONSTANTS***********/
 #define MAX 1000000
 #define numberOfSizesToUse 15
 #define numberOfTestsToDo  20
 #define numberOfTitles     23
+#define sizeOfCheckTab     10
 
 /***********TYPES***********/
 typedef int TABLEAU[MAX];
@@ -46,11 +47,10 @@ int sizesUseForTests[numberOfSizesToUse];
  */
 void fillWithRandomNumbers (int tab[], int size)
 {
-    srand(time(NULL));
     int i = 0;
     for (; i < size; i++)
     {
-        tab[i] = (int) rand() % 100;
+        tab[i] = (int) rand() % 101;
     }
 }
 
@@ -64,9 +64,11 @@ void fillWithRandomNumbers (int tab[], int size)
 void displayTab (int tab[], int size)
 {
     int i = 0;
+    printf("=====AFFICHAGE=====\n");
+    printf("Indice | Valeur\n");
     for (; i < size; i++)
     {
-        printf("%d %d\n", i, tab[i]);
+        printf("%d      | %d\n", i, tab[i]);
     }
 }
 
@@ -198,7 +200,7 @@ double CalcAverage (double Time[], int Done)
  */
 int CalcMinute (double Time)
 {
-	return Time / 60000;
+    return Time / 60000;
 }
 
 /**
@@ -210,7 +212,7 @@ int CalcMinute (double Time)
  */
 int CalcSeconde (double Time)
 {
-	return Time / 1000;
+    return Time / 1000;
 }
 
 /**
@@ -222,15 +224,15 @@ int CalcSeconde (double Time)
  */
 void CalcTotalTime (double Time, int Result[])
 {
-	int Minute = CalcMinute(Time);
-	Time -= Minute * 60000;
-	
-	int Seconde = CalcSeconde(Time);
-	Time -= Seconde * 1000;
-	
-	Result[0] = Minute;
-	Result[1] = Seconde;
-	Result[2] = Time;
+    int Minute = CalcMinute(Time);
+    Time -= Minute * 60000;
+
+    int Seconde = CalcSeconde(Time);
+    Time -= Seconde * 1000;
+
+    Result[0] = Minute;
+    Result[1] = Seconde;
+    Result[2] = Time;
 }
 
 /**
@@ -255,10 +257,10 @@ void ResetTime(double Time[])
  */
 void IsSort (int tab[], int size)
 {
-	int i = 0;
-	for ( ; i < size - 1; ++i)
-		if (tab[i] > tab[i + 1])
-			printf("Tableau Non Trié en %d ! \nValeur : %d > %d \n", i, tab[i], tab[i + 1]);
+    int i = 0;
+    for ( ; i < size - 1; ++i)
+        if (tab[i] > tab[i + 1])
+            printf("Tableau Non Trié en %d ! \nValeur : %d > %d \n", i, tab[i], tab[i + 1]);
 }
 
 /**
@@ -279,7 +281,7 @@ void DoSort (TRI * t)
     //        DONE        ,         DONE          ,         DONE         ,  DONE ,  DONE ,   DONE   ,            ???            , DONE   
 
     //Tout Doux : arbre binaire de recherche, insertion sequentielle avec liste chainée
-    
+
     for (j = 0; j < 15; ++j)
     {
         size = sizesUseForTests[j];
@@ -299,27 +301,27 @@ void DoSort (TRI * t)
             if (TotalTime > 300000) // 5min = 300000ms
                 break;
         }
-        
+
         int Res[3];
         CalcTotalTime(TotalTime, Res);
-        
+
         if (i != 20)
         {
-			printf ("Temps limite dépassé : %02d:%02d.%03d ms\n", Res[0], Res[1], Res[2]);
-			printf ("Uniquement %d tests fait\n\n", i + 1);
-			
-		}
-		else
-			printf("20 test fait : %02d:%02d.%03d ms\n\n", Res[0], Res[1], Res[2]);
-		
-		int n = i + 1;
-		
-		while (n < 20)
-		{
-			fprintf(Result, "NULL;");
-			n++;
-		}
-		
+            printf ("Temps limite dépassé : %02d:%02d.%03d ms\n", Res[0], Res[1], Res[2]);
+            printf ("Uniquement %d tests fait\n\n", i + 1);
+
+        }
+        else
+            printf("20 test fait : %02d:%02d.%03d ms\n\n", Res[0], Res[1], Res[2]);
+
+        int n = i + 1;
+
+        while (n < 20)
+        {
+            fprintf(Result, "NULL;");
+            n++;
+        }
+
         fprintf(Result, "%f\n", CalcAverage(Time, i));
         TotalTime = 0;
         ResetTime(Time);
@@ -345,11 +347,21 @@ void initSizesUseForTests ()
     for (i = 6; i < numberOfSizesToUse; i++)
         sizesUseForTests[i] = sizesUseForTests[i-1] + 100000;
     /*for (i = 0; i < numberOfSizesToUse; i++)
-        sizesUseForTests[i] /= 100;*/
+      sizesUseForTests[i] /= 100;*/
+}
+
+void check_sort(TRI * tri)
+{
+    int tab[sizeOfCheckTab];
+    fillWithRandomNumbers(tab, sizeOfCheckTab);
+    displayTab(tab, sizeOfCheckTab);
+    tri->sort(tab, sizeOfCheckTab);
+    displayTab(tab, sizeOfCheckTab);
 }
 
 int main ()
 {
+    srand(time(NULL));
     CreateCSV();
 
     initSizesUseForTests();
@@ -361,16 +373,18 @@ int main ()
     TRI Merge = MergeSort_Create();
     TRI Quick = QuickSort_Create();
     TRI Stack = StackSort_Create();
-    
-    
+    TRI ABR   = Binary_search_tree_sort_Create();
+/*
     DoSort(&Sequential);
-	DoSort(&Dichotomous);
-	DoSort(&SelectionSwap);
-	DoSort(&Bubbles);
-	DoSort(&Merge);
-	DoSort(&Quick);
-	DoSort(&Stack);
-	
-       
+    DoSort(&Dichotomous);
+    DoSort(&SelectionSwap);
+    DoSort(&Bubbles);
+    DoSort(&Merge);
+    DoSort(&Quick);
+    DoSort(&Stack);
+    DoSort(&ABR);
+    */
+    check_sort(&ABR);
+
     return 0;
 }
