@@ -15,6 +15,7 @@
 #include "time.h"
 #include "stdio.h"
 #include "Tri.h"
+#include "list.h"
 
 #include "QuickSort.h"
 #include "SequentialInsertionSort.h"
@@ -24,6 +25,7 @@
 #include "bubbleSort.h"
 #include "StackSort.h"
 #include "BinarySearchTreeSort.h"
+#include "SequentialInsertionListSort.h"
 
 /***********CONSTANTS***********/
 #define MAX 1000000
@@ -51,6 +53,15 @@ void fillWithRandomNumbers (int tab[], int size)
     for (; i < size; i++)
     {
         tab[i] = (int) rand() % 101;
+    }
+}
+
+void fillListWithRandomNumbers (List *list, int size) 
+{
+    int i = 0;
+    for (; i < size; ++i) 
+    {
+        list->push(list, (int) rand() % 101);
     }
 }
 
@@ -270,29 +281,32 @@ void IsSort (int tab[], int size)
  * each. Also calculate the average time, look out for the total time.
  * Then it writes all the result in the csv file. 
  */
-void DoSort (TRI * t)
+void DoSort (TRI * t, int useList)
 {	
     int i, j, size;
     double TotalTime = 0;
     double Time[20];
     FILE * Result = OpenCSV();
+    List *list = new_List();
 
-    //insertion sequentiel, insertion dichotomique, selection-permutation, bulles, fusion, quicksort, arbre binaire de recherche, tas
-    //        DONE        ,         DONE          ,         DONE         ,  DONE ,  DONE ,   DONE   ,            ???            , DONE   
-
-    //Tout Doux : arbre binaire de recherche, insertion sequentielle avec liste chainée
-
-    for (j = 0; j < 15; ++j)
+    for (j = 0; j < numberOfSizesToUse; ++j)
     {
         size = sizesUseForTests[j];
         printf ("Tri par %s - %d\n", t->name, size);
         int tab[size];
         fprintf(Result, "Tri par %s;%d;",t->name, size);
-        for (i = 0; i < 20; ++i)
+        for (i = 0; i < numberOfTestsToDo; ++i)
         {
-            fillWithRandomNumbers(tab, size);
-            begin = clock();
-            t->sort(tab, size);
+             if (useList) {
+                 fillListWithRandomNumbers(list, size); 
+                 begin = clock();
+                 t->sortList(list);
+             }
+             else {
+                 fillWithRandomNumbers(tab, size);
+                 begin = clock();
+                 t->sort(tab, size);
+             }
             end = clock();
             IsSort(tab, size);
             Time[i] = getTimeElapsedInMilliseconds();
@@ -300,6 +314,9 @@ void DoSort (TRI * t)
             TotalTime += Time[i];
             if (TotalTime > 300000) // 5min = 300000ms
                 break;
+            if (useList) {
+               list->free(list); 
+            }
         }
 
         int Res[3];
@@ -374,17 +391,16 @@ int main ()
     TRI Quick = QuickSort_Create();
     TRI Stack = StackSort_Create();
     TRI ABR   = Binary_search_tree_sort_Create();
-/*
-    DoSort(&Sequential);
-    DoSort(&Dichotomous);
-    DoSort(&SelectionSwap);
-    DoSort(&Bubbles);
-    DoSort(&Merge);
-    DoSort(&Quick);
-    DoSort(&Stack);
-    DoSort(&ABR);
-    */
-    check_sort(&ABR);
+    TRI SequentialList = SequentialInsertionSort_Create();
 
+    DoSort(&Sequential, 0);
+    DoSort(&Dichotomous, 0);
+    DoSort(&SelectionSwap, 0);
+    DoSort(&Bubbles, 0);
+    DoSort(&Merge, 0);
+    DoSort(&Quick, 0);
+    DoSort(&Stack, 0);
+    DoSort(&ABR, 0);
+    DoSort(&SequentialList, 1); 
     return 0;
 }

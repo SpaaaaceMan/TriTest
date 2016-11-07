@@ -1,3 +1,5 @@
+#include "list.h"
+
 TRI SequentialInsertionSort_Create()
 { 
     TRI This;                                                                                                                                 
