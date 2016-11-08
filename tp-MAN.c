@@ -321,11 +321,13 @@ void DoSort (TRI * t, int useList)
 
         int Res[3];
         CalcTotalTime(TotalTime, Res);
+		int echec = 0;
 
         if (i != 20)
         {
             printf ("Temps limite dépassé : %02d:%02d.%03d ms\n", Res[0], Res[1], Res[2]);
             printf ("Uniquement %d tests fait\n\n", i + 1);
+			echec = 1;
 
         }
         else
@@ -342,6 +344,8 @@ void DoSort (TRI * t, int useList)
         fprintf(Result, "%f\n", CalcAverage(Time, i));
         TotalTime = 0;
         ResetTime(Time);
+
+		if (echec) break;
     }
     CloseCSV(Result);
 }
